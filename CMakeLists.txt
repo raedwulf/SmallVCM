@@ -42,6 +42,12 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	endif()
 endif()
 
+# OpenCL support
+option(USE_OPENCL "Enable OpenCL support" ON)
+if(USE_OPENCL)
+	find_package(OpenCL)
+endif()
+
 # OpenMP support
 option(USE_OPENMP "Enable OpenMP support" ON)
 if(USE_OPENMP)
@@ -52,12 +58,14 @@ if(USE_OPENMP)
 endif()
 
 # Configuration file
+set(HAVE_OPENCL ${OPENCL_FOUND})
 set(HAVE_OPENMP ${OPENMP_FOUND})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/platform.hxx.in ${CMAKE_CURRENT_BINARY_DIR}/src/platform.hxx @ONLY)
 
 # Build paths
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}/src
+	${OPENCL_INCLUDE_DIRS}
 )
 
 add_executable(
@@ -66,4 +74,9 @@ add_executable(
 	MACOSX_BUNDLE
 	${SOURCE}
 	${HEADERS}
+)
+
+target_link_libraries(
+	smallvcm
+	${OPENCL_LIBRARIES}
 )
