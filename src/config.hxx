@@ -29,6 +29,7 @@
 #include <cmath>
 #include <time.h>
 #include <cstdlib>
+#include "platform.hxx"
 #include "math.hxx"
 #include "ray.hxx"
 #include "geometry.hxx"
@@ -41,7 +42,7 @@
 #include "vertexcm.hxx"
 #include "html_writer.hxx"
 
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
 #include <omp.h>
 #endif
 #include <string>

@@ -39,7 +39,7 @@
 #include "html_writer.hxx"
 #include "config.hxx"
 
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
 #include <omp.h>
 #endif
 #include <string>
@@ -54,7 +54,7 @@ float render(
     int *oUsedIterations = NULL)
 {
     // Set number of used threads
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
     omp_set_num_threads(aConfig.mNumThreads);
 #endif
 
@@ -82,7 +82,7 @@ float render(
 #pragma omp parallel
         while(clock() < startT + aConfig.mMaxTime*CLOCKS_PER_SEC)
         {
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
             int threadId = omp_get_thread_num();
 #else
             int threadId = 0;
@@ -99,7 +99,7 @@ float render(
 #pragma omp parallel for
         for(iter=0; iter < aConfig.mIterations; iter++)
         {
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
             int threadId = omp_get_thread_num();
 #else
             int threadId = 0;
@@ -276,7 +276,7 @@ int main(int argc, const char *argv[])
 
     // If number of threads is invalid, set 1 thread per processor
     if(config.mNumThreads <= 0)
-#ifndef NO_OMP
+#ifdef HAVE_OPENMP
         config.mNumThreads = std::max(1, omp_get_num_procs());
 #else
 	config.mNumThreads = 1;
