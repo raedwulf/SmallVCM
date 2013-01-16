@@ -51,7 +51,7 @@ else()
 endif()
 
 add_executable(
-	SmallVCM
+	smallvcm
 	WIN32
 	MACOSX_BUNDLE
 	${SOURCE}
