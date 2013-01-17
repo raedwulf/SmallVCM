@@ -61,12 +61,15 @@ struct Config
         kBidirectionalPhotonMapping,
         kBidirectionalPathTracing,
         kVertexConnectionMerging,
+#ifdef HAVE_OPENCL
+        kEyeLightCL,
+#endif
         kAlgorithmMax
     };
 
     static const char* GetName(Algorithm aAlgorithm)
     {
-        static const char* algorithmNames[7] =
+        static const char* algorithmNames[] =
         {
             "eye light",
             "path tracing",
@@ -74,10 +77,13 @@ struct Config
             "progressive photon mapping",
             "bidirectional photon mapping",
             "bidirectional path tracing",
-            "vertex connection and merging"
+            "vertex connection and merging",
+#ifdef HAVE_OPENCL
+	    "eye light + vexcl",
+#endif
         };
 
-        if(aAlgorithm < 0 || aAlgorithm > 7)
+        if(aAlgorithm < 0 || aAlgorithm > kAlgorithmMax)
             return "unknown algorithm";
 
         return algorithmNames[aAlgorithm];
@@ -85,10 +91,15 @@ struct Config
 
     static const char* GetAcronym(Algorithm aAlgorithm)
     {
-        static const char* algorithmNames[7] = {
-            "el", "pt", "lt", "ppm", "bpm", "bpt", "vcm" };
+        static const char* algorithmNames[] =
+	{
+            "el", "pt", "lt", "ppm", "bpm", "bpt", "vcm",
+#ifdef HAVE_OPENCL
+            "el_cl",
+#endif
+	};
 
-        if(aAlgorithm < 0 || aAlgorithm > 7)
+        if(aAlgorithm < 0 || aAlgorithm > kAlgorithmMax)
             return "unknown";
         return algorithmNames[aAlgorithm];
     }
@@ -119,6 +130,8 @@ AbstractRenderer* CreateRenderer(
     switch(aConfig.mAlgorithm)
     {
     case Config::kEyeLight:
+        return new EyeLight(scene, aSeed);
+    case Config::kEyeLightCL:
         return new EyeLight(scene, aSeed);
     case Config::kPathTracing:
         return new PathTracer(scene, aSeed);
