@@ -46,6 +46,7 @@ endif()
 option(USE_OPENCL "Enable OpenCL support" ON)
 if(USE_OPENCL)
 	find_package(OpenCL)
+	find_package(VexCL)
 endif()
 
 # OpenMP support
@@ -58,7 +59,9 @@ if(USE_OPENMP)
 endif()
 
 # Configuration file
-set(HAVE_OPENCL ${OPENCL_FOUND})
+if(${OPENCL_FOUND} AND ${VEXCL_FOUND})
+	set(HAVE_OPENCL 1)
+endif()
 set(HAVE_OPENMP ${OPENMP_FOUND})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/platform.hxx.in ${CMAKE_CURRENT_BINARY_DIR}/src/platform.hxx @ONLY)
 
